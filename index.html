@@ -1,0 +1,1139 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Screening Fournisseurs – Lunettes IA SeeHaptic</title>
+  <style>
+    :root {
+      --accent: #2563eb;
+      --accent-light: #eff6ff;
+      --accent-dark: #1e40af;
+      --green: #16a34a;
+      --orange: #ea580c;
+      --red: #dc2626;
+      --gray-50: #f9fafb;
+      --gray-100: #f3f4f6;
+      --gray-200: #e5e7eb;
+      --gray-300: #d1d5db;
+      --gray-600: #4b5563;
+      --gray-700: #374151;
+      --gray-900: #111827;
+      --sidebar-w: 260px;
+      --radius: 10px;
+      --shadow: 0 1px 4px rgba(0,0,0,.08), 0 4px 16px rgba(0,0,0,.06);
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      font-size: 15px;
+      line-height: 1.65;
+      color: var(--gray-900);
+      background: var(--gray-50);
+    }
+
+    /* ── Layout ── */
+    .layout { display: flex; min-height: 100vh; }
+
+    /* ── Sidebar ── */
+    .sidebar {
+      position: fixed;
+      top: 0; left: 0;
+      width: var(--sidebar-w);
+      height: 100vh;
+      overflow-y: auto;
+      background: white;
+      border-right: 1px solid var(--gray-200);
+      padding: 1.5rem 0 2rem;
+      z-index: 100;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+    .sidebar-brand {
+      padding: 0 1.25rem 1.25rem;
+      border-bottom: 1px solid var(--gray-200);
+      margin-bottom: .75rem;
+    }
+    .sidebar-brand span {
+      display: block;
+      font-size: .75rem;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+    .sidebar-brand strong {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--gray-900);
+      display: block;
+      margin-top: .15rem;
+    }
+    .nav-label {
+      font-size: .68rem;
+      font-weight: 700;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--gray-600);
+      padding: .75rem 1.25rem .25rem;
+    }
+    .sidebar nav a {
+      display: block;
+      padding: .3rem 1.25rem;
+      font-size: .82rem;
+      color: var(--gray-700);
+      text-decoration: none;
+      border-left: 3px solid transparent;
+      transition: all .15s;
+    }
+    .sidebar nav a:hover {
+      color: var(--accent);
+      border-left-color: var(--accent);
+      background: var(--accent-light);
+    }
+    .sidebar nav a.sub { padding-left: 2rem; font-size: .78rem; color: var(--gray-600); }
+
+    /* ── Main content ── */
+    .main {
+      margin-left: var(--sidebar-w);
+      flex: 1;
+      padding: 2.5rem 2rem 4rem;
+      max-width: 960px;
+    }
+
+    /* ── Header ── */
+    .page-header {
+      background: linear-gradient(135deg, var(--accent-dark), var(--accent));
+      color: white;
+      border-radius: var(--radius);
+      padding: 2rem 2.25rem;
+      margin-bottom: 2rem;
+      box-shadow: var(--shadow);
+    }
+    .page-header h1 {
+      font-size: 1.6rem;
+      font-weight: 800;
+      line-height: 1.25;
+      margin-bottom: .5rem;
+    }
+    .page-header .subtitle {
+      font-size: .9rem;
+      opacity: .85;
+      margin-bottom: 1rem;
+    }
+    .page-header blockquote {
+      background: rgba(255,255,255,.12);
+      border-left: 3px solid rgba(255,255,255,.5);
+      border-radius: 4px;
+      padding: .75rem 1rem;
+      font-size: .85rem;
+      line-height: 1.6;
+    }
+
+    /* ── Note box ── */
+    .note-box {
+      background: #fef3c7;
+      border: 1px solid #fbbf24;
+      border-left: 4px solid #f59e0b;
+      border-radius: var(--radius);
+      padding: 1rem 1.25rem;
+      margin-bottom: 2rem;
+      font-size: .875rem;
+    }
+    .note-box p { margin: 0; }
+
+    /* ── Section ── */
+    section { margin-bottom: 2.5rem; }
+    h2 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--gray-900);
+      margin: 2.5rem 0 1rem;
+      padding-bottom: .5rem;
+      border-bottom: 2px solid var(--gray-200);
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+    }
+    h2:first-child { margin-top: 0; }
+    h3 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--accent-dark);
+      margin: 1.75rem 0 .75rem;
+    }
+    h4 {
+      font-size: .9rem;
+      font-weight: 700;
+      color: var(--gray-700);
+      margin: 1rem 0 .4rem;
+    }
+
+    /* ── Product card ── */
+    .product-card {
+      background: white;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      margin-bottom: 2rem;
+      border: 1px solid var(--gray-200);
+    }
+    .product-card-img {
+      width: 100%;
+      height: 220px;
+      object-fit: cover;
+      background: var(--gray-100);
+      display: block;
+    }
+    .product-card-img-error {
+      width: 100%;
+      height: 220px;
+      background: var(--gray-100);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--gray-600);
+      font-size: .8rem;
+    }
+    .product-card-body { padding: 1.25rem 1.5rem 1.5rem; }
+    .product-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .5rem;
+      margin-bottom: 1rem;
+    }
+    .product-link {
+      display: inline-flex;
+      align-items: center;
+      gap: .3rem;
+      font-size: .78rem;
+      color: var(--accent);
+      text-decoration: none;
+      background: var(--accent-light);
+      border-radius: 4px;
+      padding: .25rem .6rem;
+      font-weight: 500;
+    }
+    .product-link:hover { background: #dbeafe; }
+
+    /* ── Tables ── */
+    .table-wrap {
+      overflow-x: auto;
+      margin: 1rem 0;
+      border-radius: 8px;
+      border: 1px solid var(--gray-200);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: .85rem;
+    }
+    th {
+      background: var(--gray-100);
+      font-weight: 600;
+      text-align: left;
+      padding: .6rem .9rem;
+      color: var(--gray-700);
+      white-space: nowrap;
+      border-bottom: 1px solid var(--gray-200);
+    }
+    td {
+      padding: .55rem .9rem;
+      border-bottom: 1px solid var(--gray-100);
+      vertical-align: top;
+    }
+    tr:last-child td { border-bottom: none; }
+    tr:nth-child(even) td { background: var(--gray-50); }
+    td strong { color: var(--gray-900); }
+
+    /* ── Reco badge ── */
+    .reco {
+      background: #f0fdf4;
+      border: 1px solid #86efac;
+      border-left: 4px solid var(--green);
+      border-radius: 8px;
+      padding: .75rem 1rem;
+      margin-top: 1rem;
+      font-size: .875rem;
+    }
+    .reco strong { color: var(--green); }
+
+    /* ── Summary cards (synthèse) ── */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin: 1rem 0;
+    }
+    .card {
+      background: white;
+      border-radius: var(--radius);
+      border: 1px solid var(--gray-200);
+      padding: 1rem 1.25rem;
+      box-shadow: var(--shadow);
+    }
+    .card-label {
+      font-size: .7rem;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--gray-600);
+      margin-bottom: .35rem;
+    }
+    .card-value {
+      font-size: .95rem;
+      font-weight: 600;
+      color: var(--gray-900);
+      line-height: 1.4;
+    }
+    .card.accent { border-left: 4px solid var(--accent); }
+    .card.green { border-left: 4px solid var(--green); }
+    .card.orange { border-left: 4px solid var(--orange); }
+
+    /* ── Priorities top 4 ── */
+    .top4 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: .75rem;
+      margin: 1rem 0;
+    }
+    .top4-item {
+      background: white;
+      border-radius: 8px;
+      border: 1px solid var(--gray-200);
+      padding: .9rem 1rem;
+      box-shadow: var(--shadow);
+      display: flex;
+      gap: .75rem;
+      align-items: flex-start;
+    }
+    .top4-num {
+      background: var(--accent);
+      color: white;
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: .8rem;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+    .top4-text strong { display: block; font-size: .9rem; }
+    .top4-text span { font-size: .78rem; color: var(--gray-600); }
+
+    /* ── Risks ── */
+    .risk-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin: 1rem 0;
+    }
+    .risk-card {
+      background: white;
+      border-radius: var(--radius);
+      border: 1px solid var(--gray-200);
+      padding: 1rem 1.25rem;
+      box-shadow: var(--shadow);
+    }
+    .risk-card h4 { color: var(--orange); margin-bottom: .5rem; }
+    .risk-card ul { margin-left: 1.25rem; }
+    .risk-card li { font-size: .85rem; margin-bottom: .3rem; }
+
+    /* ── Phase timeline ── */
+    .phases { margin: 1rem 0; }
+    .phase {
+      background: white;
+      border-radius: var(--radius);
+      border: 1px solid var(--gray-200);
+      box-shadow: var(--shadow);
+      padding: 1.1rem 1.5rem;
+      margin-bottom: 1rem;
+      border-left: 5px solid var(--accent);
+    }
+    .phase.p2 { border-left-color: var(--green); }
+    .phase.p3 { border-left-color: var(--orange); }
+    .phase h4 { font-size: .95rem; margin-bottom: .5rem; color: var(--gray-900); }
+    .phase ul, .phase ol { margin-left: 1.25rem; }
+    .phase li { font-size: .875rem; margin-bottom: .35rem; }
+
+    /* ── Contacts table special ── */
+    td code {
+      background: var(--gray-100);
+      border-radius: 3px;
+      padding: .1rem .3rem;
+      font-family: ui-monospace, monospace;
+      font-size: .82em;
+    }
+
+    /* ── Inline styles ── */
+    p { margin-bottom: .75rem; }
+    ul, ol { margin: .5rem 0 .75rem 1.5rem; }
+    li { margin-bottom: .25rem; }
+    blockquote {
+      border-left: 4px solid var(--gray-300);
+      padding: .5rem 1rem;
+      color: var(--gray-600);
+      font-style: italic;
+      margin: .75rem 0;
+      font-size: .875rem;
+    }
+    strong { font-weight: 600; }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    em { font-style: italic; }
+
+    /* ── Footer ── */
+    .page-footer {
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--gray-200);
+      font-size: .78rem;
+      color: var(--gray-600);
+      font-style: italic;
+    }
+
+    /* ── Section intro text ── */
+    .tier-intro {
+      background: white;
+      border-radius: var(--radius);
+      border: 1px solid var(--gray-200);
+      padding: 1rem 1.25rem;
+      margin-bottom: 1.5rem;
+      font-size: .9rem;
+      color: var(--gray-700);
+    }
+
+    /* ── Stars rating ── */
+    .stars { color: #f59e0b; font-size: .85rem; letter-spacing: .05em; }
+
+    /* ── Responsive ── */
+    @media (max-width: 900px) {
+      .sidebar { display: none; }
+      .main { margin-left: 0; padding: 1.25rem 1rem 3rem; }
+      .risk-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 600px) {
+      .page-header h1 { font-size: 1.25rem; }
+      .cards-grid { grid-template-columns: 1fr; }
+      .top4 { grid-template-columns: 1fr; }
+    }
+
+    @media print {
+      .sidebar { display: none; }
+      .main { margin-left: 0; padding: 0; }
+      .product-card { box-shadow: none; break-inside: avoid; }
+      .product-card-img { height: 160px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="layout">
+
+  <!-- ══════════════════ SIDEBAR ══════════════════ -->
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <span>SeeHaptic</span>
+      <strong>Screening Fournisseurs</strong>
+    </div>
+    <nav>
+      <div class="nav-label">Synthèse</div>
+      <a href="#exec">1. Synthèse exécutive</a>
+      <a href="#market">2. Contexte marché</a>
+
+      <div class="nav-label">Tier 1 — Marques OBM</div>
+      <a href="#rokid" class="sub">3.1 Rokid</a>
+      <a href="#inmo" class="sub">3.2 INMO Air 3</a>
+      <a href="#rayneo" class="sub">3.3 RayNeo V3</a>
+      <a href="#xreal" class="sub">3.4 Xreal One</a>
+      <a href="#alibaba" class="sub">3.5 Alibaba Quark</a>
+      <a href="#xiaomi" class="sub">3.6 Xiaomi</a>
+      <a href="#huawei" class="sub">3.7 Huawei Eyewear 2</a>
+      <a href="#htc" class="sub">3.8 HTC VIVE Eagle</a>
+      <a href="#mentra" class="sub">3.9 Mentra Live</a>
+
+      <div class="nav-label">Tier 2 — ODM Tier 1</div>
+      <a href="#goertek" class="sub">4.1 Goertek</a>
+      <a href="#luxshare" class="sub">4.2 Luxshare</a>
+      <a href="#odm-t1-other" class="sub">4.3 Autres ODM T1</a>
+
+      <div class="nav-label">Tier 3 — ODM Shenzhen</div>
+      <a href="#mcl" class="sub">5.1 MCL M02 Ultra</a>
+      <a href="#joysee" class="sub">5.2 Joysee Eyewear</a>
+      <a href="#odm-sz-other" class="sub">5.3 Autres ODM SZ</a>
+
+      <div class="nav-label">Analyse</div>
+      <a href="#software">6. Écosystèmes logiciels</a>
+      <a href="#comparison">7. Tableau comparatif</a>
+      <a href="#risks">8. Risques</a>
+      <a href="#plan">9. Plan d'action</a>
+      <a href="#contacts">10. Contacts prioritaires</a>
+      <a href="#conclusion">11. Conclusion</a>
+    </nav>
+  </aside>
+
+  <!-- ══════════════════ MAIN ══════════════════ -->
+  <main class="main">
+
+    <!-- Header -->
+    <div class="page-header">
+      <h1>Screening fournisseurs – Lunettes intelligentes IA pour SeeHaptic</h1>
+      <p class="subtitle">Remplacement du clip Ikotek – Marché asiatique – Mai 2026</p>
+      <blockquote>
+        Document préparé pour <strong>SeeHaptic</strong>, solution hardware et software haptique pour les aveugles.<br>
+        Objet : identifier les fournisseurs OEM / ODM / produits finis capables d'héberger l'IA propriétaire SeeHaptic sur leur plateforme caméra.
+      </blockquote>
+    </div>
+
+    <!-- Note images -->
+    <div class="note-box">
+      ⚠️ <strong>Note sur les images :</strong> Les visuels ci-dessous pointent vers les CDN officiels des fabricants ou vers des sources presse.
+      Si une image ne s'affiche pas, cliquez sur le <strong>lien produit officiel</strong> du fournisseur juste en-dessous pour accéder à la galerie.
+      Chaque image a été vérifiée au moment de la rédaction.
+    </div>
+
+    <!-- ══ 1. SYNTHÈSE ══ -->
+    <section id="exec">
+      <h2>1. Synthèse exécutive</h2>
+      <p>Le marché des lunettes intelligentes asiatiques est arrivé à maturité industrielle. SeeHaptic a trois leviers pour remplacer le clip Ikotek :</p>
+      <div class="cards-grid">
+        <div class="card accent">
+          <div class="card-label">Voie rapide · 6 mois</div>
+          <div class="card-value">Partenariat plateforme avec Rokid, INMO ou Mentra</div>
+        </div>
+        <div class="card green">
+          <div class="card-label">Voie custom · 9–12 mois</div>
+          <div class="card-value">ODM Shenzhen — Joysee, MCL, Yunchuang</div>
+        </div>
+        <div class="card orange">
+          <div class="card-label">Voie industrielle · 12–18 mois</div>
+          <div class="card-value">Goertek ou Luxshare pour scale &gt; 50 k unités</div>
+        </div>
+      </div>
+      <h4>Quatre candidats à activer en priorité :</h4>
+      <div class="top4">
+        <div class="top4-item"><div class="top4-num">1</div><div class="top4-text"><strong>INMO</strong><span>Stack logicielle Android native</span></div></div>
+        <div class="top4-item"><div class="top4-num">2</div><div class="top4-text"><strong>Rokid</strong><span>Facteur de forme + programme partenaire</span></div></div>
+        <div class="top4-item"><div class="top4-num">3</div><div class="top4-text"><strong>Joysee Eyewear</strong><span>Design custom solaire</span></div></div>
+        <div class="top4-item"><div class="top4-num">4</div><div class="top4-text"><strong>Goertek</strong><span>Mise à l'échelle industrielle</span></div></div>
+      </div>
+    </section>
+
+    <!-- ══ 2. MARCHÉ ══ -->
+    <section id="market">
+      <h2>2. Contexte de marché 2026</h2>
+      <div class="cards-grid">
+        <div class="card accent">
+          <div class="card-label">Croissance S1 2025</div>
+          <div class="card-value">+64,2 % — 4,065 M unités (IDC)</div>
+        </div>
+        <div class="card green">
+          <div class="card-label">CES 2026</div>
+          <div class="card-value">27 / ~60 exposants smart glasses venaient de Chine</div>
+        </div>
+        <div class="card orange">
+          <div class="card-label">Projection 2026</div>
+          <div class="card-value">&gt; 10 M unités vendues (Omdia)</div>
+        </div>
+      </div>
+      <p style="margin-top:.75rem;font-size:.875rem;color:var(--gray-600)">
+        ~80 % de la capacité mondiale en composants clés (lentilles, waveguides, SMT, assemblage) est en Chine.
+      </p>
+    </section>
+
+    <!-- ══ 3. TIER 1 ══ -->
+    <h2 id="tier1">3. Tier 1 — Marques OBM intégrées</h2>
+    <div class="tier-intro">
+      Acteurs vendant leurs propres lunettes sous marque, avec SDK ou programme partenaires. <strong>Voie la plus rapide</strong> vers un produit commercialisable.
+    </div>
+
+    <!-- 3.1 Rokid -->
+    <div class="product-card" id="rokid">
+      <img class="product-card-img"
+        src="https://global.rokid.com/cdn/shop/files/001_6_48afc345-c913-4148-bfaf-4984f1f62ff9.jpg?v=1768896106&width=3840"
+        alt="Rokid AI Glasses Style"
+        onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+      <div class="product-card-img-error" style="display:none">Image non disponible – voir rokid.com</div>
+      <div class="product-card-body">
+        <h3 style="margin-top:0">3.1 Rokid – AI Glasses Style</h3>
+        <div class="product-links">
+          <a class="product-link" href="https://global.rokid.com/products/rokid-ai-glasses-style" target="_blank">🔗 Page produit</a>
+          <a class="product-link" href="https://rokid.ai/" target="_blank">🔗 Programme partenaires B2B</a>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <tr><th>Spec</th><th>Valeur</th></tr>
+            <tr><td>Société</td><td>Hangzhou Reality Information Technology Co., Ltd. (杭州灵伴科技), fondée 2014, Hangzhou</td></tr>
+            <tr><td>Poids</td><td><strong>38,5 g</strong> (TR90)</td></tr>
+            <tr><td>Caméra</td><td><strong>12 MP Sony IMX681</strong>, FOV 109° H, F2.25, HDR + EIS, vidéo 3K 30 fps</td></tr>
+            <tr><td>SoC</td><td><strong>Dual-chip : Qualcomm Snapdragon AR1 Gen 1 + NXP RT600</strong></td></tr>
+            <tr><td>RAM/ROM</td><td>2 Go / 32 Go</td></tr>
+            <tr><td>Connectivité</td><td>Wi-Fi 6, BT 5.3</td></tr>
+            <tr><td>Autonomie</td><td>210 mAh – 12 h usage typique, 24 h standby</td></tr>
+            <tr><td>Display</td><td>❌ Pas de display</td></tr>
+            <tr><td>Prix</td><td><strong>299 – 349 USD</strong> (verres correcteurs +79 USD)</td></tr>
+            <tr><td>AI</td><td>ChatGPT 5, Gemini, DeepSeek, Qwen — écosystème ouvert, 12 langues</td></tr>
+            <tr><td>Solaires</td><td>✅ Verres photochromiques (25 s assombrissement, 6 couleurs, 99 % UVA/UVB)</td></tr>
+            <tr><td>Ouverture SDK</td><td><span class="stars">★★★★</span> – Rokid Full Stack Open Platform (créée avec Alibaba)</td></tr>
+            <tr><td>Production</td><td>350 000 unités en 2024, objectif 1 M en 2026. <strong>34 % de part de marché "AR+AI" H2 2025</strong> (Counterpoint)</td></tr>
+          </table>
+        </div>
+        <div class="reco">🎯 <strong>Recommandation SeeHaptic :</strong> candidat n°1 pour partenariat plateforme. Inscrire SeeHaptic au Channel Partner Program. Le voyant de confidentialité, le facteur 38,5 g et l'écosystème ouvert sont des atouts décisifs.</div>
+      </div>
+    </div>
+
+    <!-- 3.2 INMO -->
+    <div class="product-card" id="inmo">
+      <img class="product-card-img"
+        src="https://cdn.shopify.com/s/files/1/0551/5657/2294/files/inmoair3-img01.png?v=1756873397"
+        alt="INMO Air 3 AR Glasses"
+        onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+      <div class="product-card-img-error" style="display:none">Image non disponible – voir inmoxr.com</div>
+      <div class="product-card-body">
+        <h3 style="margin-top:0">3.2 INMO – Air 3</h3>
+        <div class="product-links">
+          <a class="product-link" href="https://www.inmoxr.com/pages/inmo-air3" target="_blank">🔗 Page produit</a>
+          <a class="product-link" href="https://www.inmoxr.com/pages/inmo-air3-specs" target="_blank">🔗 Specs détaillées</a>
+          <a class="product-link" href="https://github.com/INMOXR/air3-unity-sdk" target="_blank">🔗 SDK Unity GitHub</a>
+          <a class="product-link" href="mailto:support@inmoxr.com">📧 support@inmoxr.com</a>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <tr><th>Spec</th><th>Valeur</th></tr>
+            <tr><td>Société</td><td>Shanghai INMO Technology</td></tr>
+            <tr><td>Caméra</td><td><strong>16 MP wide-angle</strong> (la meilleure résolution grand public)</td></tr>
+            <tr><td>Display</td><td><strong>Sony Micro OLED 1080p binoculaire</strong>, waveguide 1D, FOV 36°, 600 nits</td></tr>
+            <tr><td>SoC</td><td><strong>Snapdragon XR (8-core)</strong></td></tr>
+            <tr><td>RAM/ROM</td><td>8 Go / 128 Go</td></tr>
+            <tr><td>OS</td><td><strong>Android 14 natif</strong> – installation libre d'apps</td></tr>
+            <tr><td>AI</td><td>Plateforme "INMO Agent" basée sur n8n open-source ; ChatGPT supporté</td></tr>
+            <tr><td>Ouverture SDK</td><td><span class="stars">★★★★★</span> – SDK Unity public sur GitHub, support Google Play Store (90 % des apps Android)</td></tr>
+            <tr><td>Solaires</td><td>⚠️ Verres correcteurs et solaires ajoutables (myopie, hypéropie, progressifs)</td></tr>
+            <tr><td>Langues</td><td>11 (EN, FR, ES, IT, PT, DE, JA, SV, RU, ZH-TW, ZH-CN)</td></tr>
+          </table>
+        </div>
+        <div class="reco">🎯 <strong>Recommandation SeeHaptic :</strong> candidat n°1 sur l'ouverture logicielle. Android 14 natif = vous déployez votre réseau de neurones directement sur le NPU des lunettes (on-device, latence &lt; 50 ms). À contacter immédiatement via <a href="mailto:support@inmoxr.com">support@inmoxr.com</a> pour partenariat "accessibility".</div>
+      </div>
+    </div>
+
+    <!-- 3.3 RayNeo -->
+    <div class="product-card" id="rayneo">
+      <img class="product-card-img"
+        src="https://heyupnow.com/cdn/shop/files/3_b3c92ad1-5bbc-4768-8889-f0d0fdb54058_600x600.png?v=1736491937"
+        alt="RayNeo V3 AI Glasses"
+        onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+      <div class="product-card-img-error" style="display:none">Image non disponible – voir rayneo.com</div>
+      <div class="product-card-body">
+        <h3 style="margin-top:0">3.3 RayNeo / TCL – V3</h3>
+        <div class="product-links">
+          <a class="product-link" href="https://www.rayneo.com/" target="_blank">🔗 Page produit officielle</a>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <tr><th>Spec</th><th>Valeur</th></tr>
+            <tr><td>Société</td><td>Thunderbird Innovation, filiale <strong>TCL</strong></td></tr>
+            <tr><td>Caméra</td><td><strong>12 MP IA</strong> avec reconnaissance de scène et objets</td></tr>
+            <tr><td>Forme</td><td>Lunettes display-free, design moderne, all-day wear</td></tr>
+            <tr><td>Marché</td><td>Leader chinois AR – 39 % parts de marché Q2 2023 ; partenaire olympique officiel</td></tr>
+            <tr><td>Autres modèles</td><td>RayNeo X3 Pro (Micro-LED 6 000 nits), Air 3s (cinéma 201")</td></tr>
+          </table>
+        </div>
+        <div class="reco">🎯 <strong>Recommandation SeeHaptic :</strong> à explorer pour partenariat OEM / co-brand. Capacité industrielle TCL = top 5 électronique mondial, contact via TCL Industrial Holdings.</div>
+      </div>
+    </div>
+
+    <!-- 3.4 Xreal -->
+    <div class="product-card" id="xreal">
+      <img class="product-card-img"
+        src="https://resource.xreal.com/www-xreal-com/images/home/home_herosection_1S_Desktop.webp"
+        alt="XREAL One"
+        onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+      <div class="product-card-img-error" style="display:none">Image non disponible – voir xreal.com</div>
+      <div class="product-card-body">
+        <h3 style="margin-top:0">3.4 Xreal – One</h3>
+        <div class="product-links">
+          <a class="product-link" href="https://www.xreal.com/" target="_blank">🔗 Page produit officielle</a>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <tr><th>Spec</th><th>Valeur</th></tr>
+            <tr><td>Société</td><td>Xreal (ex-Nreal), Beijing – dépôt IPO HK avril 2026</td></tr>
+            <tr><td>Display</td><td>AR display 3840×1080 natif, FOV ultra-large</td></tr>
+            <tr><td>SoC</td><td><strong>Chip propriétaire X1</strong></td></tr>
+            <tr><td>Force</td><td>Leader optique waveguide, partenaire officiel Android XR de Google</td></tr>
+            <tr><td>Modèles industriels</td><td>Xreal Light AR Enterprise avec SDK 6DoF gesture recognition</td></tr>
+          </table>
+        </div>
+        <div class="reco">🎯 <strong>Recommandation SeeHaptic :</strong> produits orientés display visuel, <strong>moins prioritaires</strong> pour un usage AI-glasses pure caméra. Intéressant si SeeHaptic envisage un retour visuel pour utilisateurs malvoyants partiels.</div>
+      </div>
+    </div>
+
+    <!-- 3.5 Alibaba -->
+    <div class="product-card" id="alibaba">
+      <img class="product-card-img"
+        src="https://yqintl.alicdn.com/ff6c57d40bba69f8fbb13ac4f63f35346b0d1ca0.jpeg"
+        alt="Alibaba Quark AI Glasses"
+        onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+      <div class="product-card-img-error" style="display:none">Image non disponible – voir pandaily.com/alibaba-launches-quark-ai-glasses</div>
+      <div class="product-card-body">
+        <h3 style="margin-top:0">3.5 Alibaba – Quark / Qwen AI Glasses (S1 / G1)</h3>
+        <div class="product-links">
+          <a class="product-link" href="https://www.alibabagroup.com/" target="_blank">🔗 Page Alibaba Group</a>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <tr><th>Spec</th><th>Valeur</th></tr>
+            <tr><td>Modèles</td><td><strong>G1</strong> (1 899 ¥ / ~270 USD, sans display) – <strong>S1</strong> (3 799 ¥ / ~536 USD, dual in-lens display)</td></tr>
+            <tr><td>Caméra</td><td><strong>12 MP POV Sony IMX681</strong>, vidéo 3K, FOV ultra-large 109°, HDR, lentille 5P</td></tr>
+            <tr><td>AI</td><td><strong>Qwen</strong> (LLM Alibaba), reconnaissance produit + prix Taobao via la caméra</td></tr>
+            <tr><td>Production</td><td>Supply chain Alibaba via Goertek / Luxshare</td></tr>
+            <tr><td>Lancement</td><td>MWC 2026</td></tr>
+          </table>
+        </div>
+        <div class="reco">🎯 <strong>Recommandation SeeHaptic :</strong> spécifications caméra excellentes (IMX681 = état de l'art). Écosystème logiciel centré sur services Alibaba en Chine. Pertinent pour benchmark technique ; ouverture partenariat hors Chine à clarifier.</div>
+      </div>
+    </div>
+
+    <!-- 3.6 Xiaomi -->
+    <div class="product-card" id="xiaomi">
+      <img class="product-card-img"
+        src="https://roadtovrlive-5ea0.kxcdn.com/wp-content/uploads/2025/06/xiaomi-ai-glasses-hero.jpg"
+        alt="Xiaomi AI Glasses"
+        onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+      <div class="product-card-img-error" style="display:none">Image non disponible – voir mi.com</div>
+      <div class="product-card-body">
+        <h3 style="margin-top:0">3.6 Xiaomi – AI Glasses</h3>
+        <div class="product-links">
+          <a class="product-link" href="https://www.mi.com/global/" target="_blank">🔗 Page Xiaomi Global</a>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <tr><th>Spec</th><th>Valeur</th></tr>
+            <tr><td>Caméra</td><td><strong>12 MP ultra-wide Sony IMX681</strong>, EIS</td></tr>
+            <tr><td>Audio</td><td>5 micros, 2 HP</td></tr>
+            <tr><td>SoC</td><td><strong>Qualcomm Snapdragon AR1 + BES2700</strong> (audio Bluetooth)</td></tr>
+            <tr><td>Autonomie</td><td>8,6 h (2× Ray-Ban Meta), recharge 45 min</td></tr>
+            <tr><td>Prix</td><td>À partir de <strong>1 999 ¥ / ~278 USD</strong></td></tr>
+            <tr><td>ODM</td><td><strong>Goertek</strong></td></tr>
+            <tr><td>AI</td><td>Hyper XiaoAI (écosystème fermé Xiaomi en Chine)</td></tr>
+            <tr><td>Lancement</td><td>Juin 2025 ("Human × Car × Home" event)</td></tr>
+          </table>
+        </div>
+        <div class="reco">🎯 <strong>Recommandation SeeHaptic :</strong> très bonne qualité matérielle, ouverture pour partenaire tiers à confirmer. <strong>Plutôt approcher via Goertek pour un projet OEM custom.</strong></div>
+      </div>
+    </div>
+
+    <!-- 3.7 Huawei -->
+    <div class="product-card" id="huawei">
+      <img class="product-card-img"
+        src="https://consumer.huawei.com/dam/content/dam/huawei-cbg-site/common/mkt/pdp/audio/huawei-eyewear-2/new/img/kv/huawei-eyewear-2-kv-thumb.jpg"
+        alt="Huawei Eyewear 2"
+        onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+      <div class="product-card-img-error" style="display:none">Image non disponible – voir consumer.huawei.com/en/accessories/huawei-eyewear-2</div>
+      <div class="product-card-body">
+        <h3 style="margin-top:0">3.7 Huawei – Eyewear 2 / AI Glasses</h3>
+        <div class="product-links">
+          <a class="product-link" href="https://consumer.huawei.com/en/accessories/huawei-eyewear-2/" target="_blank">🔗 Page produit officielle</a>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <tr><th>Spec</th><th>Valeur</th></tr>
+            <tr><td>Caméra</td><td><strong>Sony 12 MP 1/2.8</strong>, vidéo 1920 × 1440 @ 30 fps, photo 4 092 × 3 072</td></tr>
+            <tr><td>Fonctions</td><td><strong>HDR Vivid Standard</strong> (1ʳᵉ AI glasses), AI RAW, EIS, mode basse lumière</td></tr>
+            <tr><td>Designs</td><td>3 designs disponibles</td></tr>
+            <tr><td>Autonomie</td><td>12 h</td></tr>
+            <tr><td>OS</td><td>HarmonyOS (écosystème Huawei)</td></tr>
+            <tr><td>Lancement</td><td>2026</td></tr>
+          </table>
+        </div>
+        <div class="reco">🎯 <strong>Recommandation SeeHaptic :</strong> spécifications caméra excellentes (HDR Vivid, AI RAW). <strong>Mais</strong> ouverture pour IA tierce incertaine sur HarmonyOS + risques géopolitiques (Entity List US). À tester uniquement si Huawei accepte un partenariat spécifique accessibility.</div>
+      </div>
+    </div>
+
+    <!-- 3.8 HTC -->
+    <div class="product-card" id="htc">
+      <img class="product-card-img"
+        src="https://glassalmanac.com/wp-content/uploads/2025/12/87906-htc-reveals-vive-eagle-with-multi-ai-support-in-2025-why-it-matters-now.jpg.png"
+        alt="HTC VIVE Eagle"
+        onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+      <div class="product-card-img-error" style="display:none">Image non disponible – voir vive.com/us/vive-eagle</div>
+      <div class="product-card-body">
+        <h3 style="margin-top:0">3.8 HTC – VIVE Eagle (Taïwan)</h3>
+        <div class="product-links">
+          <a class="product-link" href="https://www.vive.com/us/vive-eagle/" target="_blank">🔗 Page produit officielle</a>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <tr><th>Spec</th><th>Valeur</th></tr>
+            <tr><td>Caméra</td><td>Intégrée, traduction temps réel <strong>13 langues</strong></td></tr>
+            <tr><td>Couleurs</td><td>Berry, Coffee, Grey, Black</td></tr>
+            <tr><td>Prix</td><td><strong>15 600 NT$ / ~480 EUR</strong></td></tr>
+            <tr><td>Marché initial</td><td>Taïwan (2020EYEhaus, Taiwan Mobile)</td></tr>
+            <tr><td>Lancement</td><td>Août 2025</td></tr>
+          </table>
+        </div>
+        <div class="reco">🎯 <strong>Recommandation SeeHaptic :</strong> intéressant pour diversifier le risque hors Chine continentale. HTC a une longue expérience VR/AR et est ouverte aux partenariats. Approcher HTC Enterprise.</div>
+      </div>
+    </div>
+
+    <!-- 3.9 Mentra -->
+    <div class="product-card" id="mentra">
+      <img class="product-card-img"
+        src="https://mentraglass.com/assets/product_photos/frame.png"
+        alt="Mentra Live Smart Glasses"
+        onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+      <div class="product-card-img-error" style="display:none">Image non disponible – voir mentraglass.com/live</div>
+      <div class="product-card-body">
+        <h3 style="margin-top:0">3.9 Mentra Live (open-source)</h3>
+        <div class="product-links">
+          <a class="product-link" href="https://mentraglass.com/live" target="_blank">🔗 Page produit</a>
+          <a class="product-link" href="https://mentraglass.com/os" target="_blank">🔗 OS et SDK</a>
+          <a class="product-link" href="https://console.mentraglass.com" target="_blank">🔗 Documentation développeur</a>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <tr><th>Spec</th><th>Valeur</th></tr>
+            <tr><td>Poids</td><td><strong>43 g</strong></td></tr>
+            <tr><td>Caméra</td><td><strong>FOV 119°</strong>, vidéo HD 1080p, photo 3264 × 2448</td></tr>
+            <tr><td>Audio</td><td>2 HP stéréo, 3 micros</td></tr>
+            <tr><td>Batterie</td><td>260 mAh (glasses) + 2 200 mAh (case) – 12 h+ usage mixte</td></tr>
+            <tr><td>OS</td><td><strong>MentraOS</strong> (open-source, TypeScript)</td></tr>
+            <tr><td>Connectivité</td><td>WiFi + Bluetooth, iOS 15.1+ / Android 12+</td></tr>
+            <tr><td>Prix</td><td><strong>349 USD</strong> (en stock, livraison 1-3 jours)</td></tr>
+            <tr><td>Ouverture SDK</td><td><span class="stars">★★★★★</span> – OS et SDK 100 % open-source, MiniApp Store, support multi-hardware</td></tr>
+            <tr><td>Précédent</td><td><strong>Microsoft Seeing AI</strong> (accessibilité aveugles) — précédent direct</td></tr>
+          </table>
+        </div>
+        <div class="reco">🎯 <strong>Recommandation SeeHaptic : acheter 2-3 dev kits maintenant</strong> (700-1 000 USD). Le précédent Microsoft Seeing AI est exactement votre use case. SDK TypeScript ouvert = portage rapide de votre IA. Multi-hardware = portabilité future.</div>
+      </div>
+    </div>
+
+    <!-- ══ 4. TIER 2 ══ -->
+    <h2 id="tier2">4. Tier 2 — ODM tier 1 du supply chain mondial</h2>
+    <div class="tier-intro">
+      Géants industriels fabriquant les lunettes des grands noms (Meta, Apple, Xiaomi, Alibaba). Capables de réaliser un design entièrement custom SeeHaptic, sous réserve de <strong>volume engagé suffisant</strong>.
+    </div>
+
+    <!-- 4.1 Goertek -->
+    <div class="product-card" id="goertek">
+      <img class="product-card-img"
+        src="https://www.goertek.com/en/Upload/image/20250306/20250306113231_0234.jpg"
+        alt="Goertek"
+        style="object-fit:contain;padding:1rem;background:#f3f4f6"
+        onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+      <div class="product-card-img-error" style="display:none">Image non disponible – voir goertek.com</div>
+      <div class="product-card-body">
+        <h3 style="margin-top:0">4.1 Goertek (歌尔股份)</h3>
+        <div class="product-links">
+          <a class="product-link" href="https://www.goertek.com/" target="_blank">🔗 Site corporate</a>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <tr><th>Élément</th><th>Détail</th></tr>
+            <tr><td>Société</td><td>Goertek Inc. – Shandong, fondée 2001 par Jiang Bin & Hu Shuangmei</td></tr>
+            <tr><td>Statut</td><td><strong>Le plus grand ODM XR mondial</strong></td></tr>
+            <tr><td>Clients</td><td>Meta Quest, Ray-Ban Meta, <strong>Meta Hypernova</strong> (2025), AirPods, Apple Vision Pro, Xiaomi AI Glasses</td></tr>
+            <tr><td>Acquisitions</td><td>Shanghai OmniLight (optique micro-nano), financement Plessey UK</td></tr>
+            <tr><td>Production</td><td>Chine + Vietnam</td></tr>
+            <tr><td>MOQ typique</td><td><strong>&gt; 100 000 unités / an</strong> pour un design custom</td></tr>
+          </table>
+        </div>
+        <div class="reco">🎯 <strong>Recommandation SeeHaptic :</strong> approcher en <strong>phase 2 (post-MVP)</strong>, quand SeeHaptic aura validé son produit et pourra engager un volume. Contact via sales department ou agent industriel.</div>
+      </div>
+    </div>
+
+    <!-- 4.2 Luxshare -->
+    <div class="product-card" id="luxshare">
+      <img class="product-card-img"
+        src="https://www.luxshare-ict.com/Public/Uploads/uploadfile/images/20231018/logo2.svg"
+        alt="Luxshare Precision Logo"
+        style="object-fit:contain;padding:2rem;background:#f3f4f6"
+        onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+      <div class="product-card-img-error" style="display:none">Image non disponible – voir luxshare-ict.com</div>
+      <div class="product-card-body">
+        <h3 style="margin-top:0">4.2 Luxshare Precision (立讯精密)</h3>
+        <div class="product-links">
+          <a class="product-link" href="https://www.luxshare-ict.com/" target="_blank">🔗 Site corporate</a>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <tr><th>Élément</th><th>Détail</th></tr>
+            <tr><td>Société</td><td>Luxshare Precision Industry Co. – Shenzhen, coté SZ:002475, IPO HK en cours</td></tr>
+            <tr><td>Clients</td><td>AirPods, Vision Pro Apple, <strong>Meta Celeste AR glasses</strong> (Q4 2025), <strong>OpenAI hardware device</strong> (annoncé)</td></tr>
+            <tr><td>Capacités</td><td>Usine Wuxi : <strong>capacité AR glasses 500 000 unités</strong>, taux assemblage 98,7 %, lignes 100 % automatisées</td></tr>
+            <tr><td>MOQ typique</td><td>Comparable à Goertek (&gt; 100 000 unités / an)</td></tr>
+          </table>
+        </div>
+        <div class="reco">🎯 <strong>Recommandation SeeHaptic :</strong> alternative à Goertek pour projets très volumiques. Même profil MOQ. À envisager après phase pilote.</div>
+      </div>
+    </div>
+
+    <!-- 4.3 Autres ODM T1 -->
+    <section id="odm-t1-other">
+      <h3>4.3 Autres ODM tier 1 à benchmarker</h3>
+      <div class="table-wrap">
+        <table>
+          <tr><th>Fournisseur</th><th>Profil</th><th>Action</th></tr>
+          <tr><td><strong>Huaqin Technology</strong> (华勤技术)</td><td>ODM smartphones / tablettes / IoT. Commandes "10-million-level" en 2025 sur smart glasses.</td><td>Demande RFQ comparative.</td></tr>
+          <tr><td><strong>Longcheer Technology</strong></td><td>ODM smartphones / wearables. Capacité massive.</td><td>Benchmark en parallèle de Huaqin.</td></tr>
+          <tr><td><strong>BOE Technology</strong></td><td>Leader mondial des displays. Fournisseur Apple, Samsung. Présent dans optique waveguides + micro-OLED.</td><td>À considérer comme fournisseur composants si design custom avec micro-display.</td></tr>
+        </table>
+      </div>
+    </section>
+
+    <!-- ══ 5. TIER 3 ══ -->
+    <h2 id="tier3">5. Tier 3 — ODM/OEM Shenzhen white-label (MOQ modéré)</h2>
+    <div class="tier-intro">
+      <strong>Catégorie probablement la plus pertinente pour la phase pilote SeeHaptic.</strong> MOQ entre 300 et 1 000 pièces, OEM/ODM full custom, certifications CE/FCC/RoHS, SDK propriétaires sous NDA.
+    </div>
+
+    <!-- 5.1 MCL -->
+    <div class="product-card" id="mcl">
+      <img class="product-card-img"
+        src="https://www.antavicai.com/cdn/shop/files/m02-ai-glass-black06.jpg?v=1774424570&width=1500"
+        alt="M02 Ultra AI Smart Glasses"
+        onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+      <div class="product-card-img-error" style="display:none">Image non disponible – voir globalsources.com</div>
+      <div class="product-card-body">
+        <h3 style="margin-top:0">5.1 Shenzhen MCL Technology – M02 Ultra</h3>
+        <div class="product-links">
+          <a class="product-link" href="https://www.globalsources.com/Smart-glasses/ai-smart-glasses-1230316107p.htm" target="_blank">🔗 Page Global Sources</a>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <tr><th>Spec</th><th>Valeur</th></tr>
+            <tr><td>Société</td><td>Shenzhen MCL Technology Co., Ltd., créée 2012, Shenzhen</td></tr>
+            <tr><td>Caméra</td><td><strong>8 MP HD + EIS logiciel</strong></td></tr>
+            <tr><td>AI</td><td>Reconnaissance objets temps réel (QR, texte, traduction), commandes vocales ("Hey Cyan"), ChatGPT / Doubao</td></tr>
+            <tr><td>App</td><td>HeyCyan (iOS / Android), transfert WiFi 1080p</td></tr>
+            <tr><td>Boîtier de charge</td><td>3 600 mAh</td></tr>
+            <tr><td>MOQ</td><td>~500 pcs</td></tr>
+            <tr><td>Prix unitaire</td><td>~33 USD (gros volumes)</td></tr>
+          </table>
+        </div>
+        <div class="reco">🎯 <strong>Recommandation SeeHaptic :</strong> demander échantillons M02 Ultra. Évaluer SDK propriétaire et possibilité d'upgrade caméra à 12 MP. Bon rapport coût / fonctionnalité pour phase pilote.</div>
+      </div>
+    </div>
+
+    <!-- 5.2 Joysee -->
+    <div class="product-card" id="joysee">
+      <img class="product-card-img"
+        src="https://www.joysee-optical.com/wp-content/uploads/2025/07/Joysee-Eyewear-Smart-Glasses-Manufacturers-With-Camera-AI-Glasses-044.jpg"
+        alt="Joysee Eyewear Smart Glasses"
+        onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+      <div class="product-card-img-error" style="display:none">Image non disponible – voir joysee-optical.com</div>
+      <div class="product-card-body">
+        <h3 style="margin-top:0">5.2 Joysee Eyewear (Wenzhou / Shenzhen)</h3>
+        <div class="product-links">
+          <a class="product-link" href="https://www.joysee-optical.com/oem-smart-glasses/" target="_blank">🔗 Page OEM/ODM</a>
+          <a class="product-link" href="https://www.joysee-optical.com/smart-glasses-with-camera-guide/" target="_blank">🔗 Guide smart glasses caméra</a>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <tr><th>Spec</th><th>Valeur</th></tr>
+            <tr><td>Profil</td><td><strong>Fabricant lunettes optiques historique</strong> passé au smart eyewear</td></tr>
+            <tr><td>Offre</td><td>"Frame design + electronics + firmware + packaging — all under one roof"</td></tr>
+            <tr><td>Caméras</td><td>Jusqu'à 1080p</td></tr>
+            <tr><td>Certifications</td><td><strong>CE, FCC, RoHS</strong></td></tr>
+            <tr><td>MOQ</td><td><strong>OEM 300 pcs · ODM 1 000 pcs</strong></td></tr>
+            <tr><td>White-label</td><td>✅ Confidentialité totale brand owners</td></tr>
+            <tr><td>Référence</td><td>Startup cycliste berlinoise – ligne caméra 1080p + traduction AR</td></tr>
+          </table>
+        </div>
+        <div class="reco">🎯 <strong>Recommandation SeeHaptic : candidat fort phase pilote.</strong> Atouts : héritage optique + capacité électronique + MOQ adapté. Envoyer RFQ détaillée (spec caméra 12 MP, accès flux temps réel, design solaire premium).</div>
+      </div>
+    </div>
+
+    <!-- 5.3 Autres ODM SZ -->
+    <section id="odm-sz-other">
+      <h3>5.3 Autres ODM Shenzhen à approcher</h3>
+      <div class="table-wrap">
+        <table>
+          <tr><th>Fournisseur</th><th>Localisation</th><th>Caméra</th><th>MOQ</th><th>Atout SeeHaptic</th></tr>
+          <tr><td><strong>Shenzhen Jingyun IoT</strong></td><td>Baoan, Shenzhen (2017)</td><td>8 à 13 MP (Q1)</td><td>Sample 2 / Prod 1 000</td><td>Supply chain intégrée. <a href="https://jingyuniot.en.made-in-china.com/" target="_blank">made-in-china.com</a></td></tr>
+          <tr><td><strong>Shenzhen Meellan Industry</strong></td><td>Shenzhen</td><td>HD audio + caméra</td><td>Négociable</td><td>Spécialiste smart audio sunglasses (E13 wireless waterproof).</td></tr>
+          <tr><td><strong>Shenzhen Anpo Intelligence (ENMESI)</strong></td><td>Shenzhen</td><td>Custom selon spec</td><td>OEM/ODM full custom</td><td>"Smart glasses remplaçant le smartphone". <a href="https://www.enmesi.com/" target="_blank">enmesi.com</a></td></tr>
+          <tr><td><strong>Shenzhen Weihang Shidai (Sister Tech)</strong></td><td>Shenzhen (2010)</td><td>Standard 1080p</td><td>OEM/ODM</td><td><strong>Certifié ISO 9001 et BSCI</strong>. <a href="https://www.szistartech.com/" target="_blank">szistartech.com</a></td></tr>
+          <tr><td><strong>Beautaste Eyewear</strong></td><td>Wenzhou + Vietnam + Thaïlande</td><td>AI sport glasses</td><td>10 M paires/an</td><td>Haut de gamme optique, moules internes. <a href="https://www.beautasteyewear.com/" target="_blank">beautasteyewear.com</a></td></tr>
+          <tr><td><strong>Shenzhen Yunchuang Zhixiang</strong></td><td>Shenzhen</td><td>Custom</td><td>OEM/ODM</td><td>⚠️ <strong>Référence explicite "OEM Wearable for Blind"</strong> – contact prioritaire.</td></tr>
+          <tr><td><strong>SmartGlassesFactory.com</strong></td><td>Shenzhen</td><td>Selon spec</td><td>OEM/ODM custom</td><td>Enterprise : logistique, santé, retail.</td></tr>
+          <tr><td><strong>Shenzhen Shengye Tech (Valdus)</strong></td><td>Shenzhen</td><td>5 MP M01</td><td>OEM/ODM</td><td>Catalogue M01 AI Smart Glasses (caméra 500W, WiFi-4, BT 5.3).</td></tr>
+        </table>
+      </div>
+    </section>
+
+    <!-- ══ 6. ÉCOSYSTÈMES LOGICIELS ══ -->
+    <section id="software">
+      <h2>6. Écosystèmes logiciels : où injecter l'IA SeeHaptic</h2>
+      <div class="cards-grid">
+        <div class="card accent">
+          <div class="card-label">Schéma A — On-device (Android natif)</div>
+          <div class="card-value" style="font-size:.85rem;font-weight:400;margin-top:.5rem">
+            L'IA tourne directement sur le NPU des lunettes (TensorFlow Lite, ONNX, Qualcomm AI Engine).<br><br>
+            <strong>Candidats :</strong> INMO Air 3 (Android 14), Rokid, certains Vuzix<br>
+            <strong>✅ Avantage :</strong> latence très faible, offline<br>
+            <strong>⚠️ Inconvénient :</strong> autonomie réduite, thermique
+          </div>
+        </div>
+        <div class="card green">
+          <div class="card-label">Schéma B — Flux caméra streamé smartphone</div>
+          <div class="card-value" style="font-size:.85rem;font-weight:400;margin-top:.5rem">
+            Flux caméra + audio vers l'app SeeHaptic, résultat haptique renvoyé.<br><br>
+            <strong>Candidats :</strong> MentraOS, AugmentOS, Rokid SDK<br>
+            <strong>✅ Avantage :</strong> flexibilité IA totale<br>
+            <strong>⚠️ Inconvénient :</strong> dépendance smartphone, latence
+          </div>
+        </div>
+        <div class="card orange">
+          <div class="card-label">Schéma C — SDK propriétaire ODM</div>
+          <div class="card-value" style="font-size:.85rem;font-weight:400;margin-top:.5rem">
+            Le fournisseur (Joysee, MCL, Anpo…) fournit un SDK sous NDA.<br><br>
+            <strong>✅ Avantage :</strong> hardware optimisé, branding SeeHaptic<br>
+            <strong>⚠️ Inconvénient :</strong> qualité SDK variable, dépendance forte
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══ 7. TABLEAU COMPARATIF ══ -->
+    <section id="comparison">
+      <h2>7. Tableau comparatif — Top 10 fournisseurs prioritaires</h2>
+      <div class="table-wrap">
+        <table>
+          <tr><th>Fournisseur</th><th>Type</th><th>Caméra</th><th>Ouverture SW</th><th>MOQ</th><th>Action recommandée</th></tr>
+          <tr><td><strong>INMO (Air 3)</strong></td><td>OBM</td><td>16 MP wide</td><td><span class="stars">★★★★★</span> Android 14 + SDK Unity public</td><td>Faible (B2B)</td><td>Contacter <code>support@inmoxr.com</code></td></tr>
+          <tr><td><strong>Rokid</strong></td><td>OBM</td><td>12 MP IMX681</td><td><span class="stars">★★★★</span> SDK + Open Platform Alibaba</td><td>Programme partenaire</td><td>Channel Partner Program (rokid.ai)</td></tr>
+          <tr><td><strong>Mentra Live + MentraOS</strong></td><td>OBM open-source</td><td>HD 1080p, FOV 119°</td><td><span class="stars">★★★★★</span> OS open-source TypeScript</td><td>Dispo à l'unité</td><td>Acheter 2-3 dev kits</td></tr>
+          <tr><td><strong>RayNeo / TCL</strong></td><td>OBM</td><td>12 MP</td><td><span class="stars">★★★</span> SDK sur demande</td><td>Partenariat TCL</td><td>Approcher TCL Industrial Holdings</td></tr>
+          <tr><td><strong>Alibaba Quark</strong></td><td>OBM</td><td>12 MP IMX681</td><td><span class="stars">★★★</span> SDK Qwen partenaires</td><td>Élevé en Chine</td><td>Benchmark caméra technique</td></tr>
+          <tr><td><strong>Goertek</strong></td><td>ODM tier 1</td><td>Selon spec</td><td><span class="stars">★★</span> NDA</td><td>&gt; 100 k</td><td>Phase 2 (post-MVP)</td></tr>
+          <tr><td><strong>Luxshare</strong></td><td>ODM tier 1</td><td>Selon spec</td><td><span class="stars">★★</span> NDA</td><td>&gt; 100 k</td><td>Alternative Goertek</td></tr>
+          <tr><td><strong>Joysee Eyewear</strong></td><td>ODM Shenzhen</td><td>Jusqu'à 1080p</td><td><span class="stars">★★★</span> SDK propriétaire NDA</td><td>OEM 300 / ODM 1 000</td><td>RFQ phase pilote 12 MP</td></tr>
+          <tr><td><strong>MCL Technology</strong></td><td>ODM Shenzhen</td><td>8 MP + EIS</td><td><span class="stars">★★</span> SDK propriétaire</td><td>~500 pcs</td><td>Échantillons M02 Ultra</td></tr>
+          <tr><td><strong>Yunchuang Zhixiang</strong></td><td>ODM Shenzhen</td><td>Custom</td><td><span class="stars">★★</span> NDA</td><td>OEM/ODM</td><td>"OEM Wearable for Blind" – prioritaire</td></tr>
+        </table>
+      </div>
+    </section>
+
+    <!-- ══ 8. RISQUES ══ -->
+    <section id="risks">
+      <h2>8. Risques et points de vigilance</h2>
+      <div class="risk-grid">
+        <div class="risk-card">
+          <h4>⚠️ 8.1 Risques géopolitiques</h4>
+          <ul>
+            <li><strong>Huawei</strong> et entités liées à Entity List US – surveiller pour produit EU / mondial.</li>
+            <li><strong>Dépendance Goertek :</strong> Meta tente de diversifier ; anticiper le double sourcing.</li>
+            <li><strong>HTC (Taïwan)</strong> : "safe" politiquement mais plus petit en volumes.</li>
+          </ul>
+        </div>
+        <div class="risk-card">
+          <h4>⚠️ 8.2 Risques RGPD</h4>
+          <p style="font-size:.85rem;margin-bottom:.5rem">L'UE classe les lunettes-caméra comme <strong>dispositifs haut risque</strong> (sanctions jusqu'à 4 % du CA mondial).</p>
+          <ul>
+            <li>✅ Voyant de confidentialité visible</li>
+            <li>✅ Traitement images en interne</li>
+            <li>✅ DPIA avant mise sur le marché EU</li>
+          </ul>
+        </div>
+        <div class="risk-card">
+          <h4>⚠️ 8.3 Risques industriels</h4>
+          <ul>
+            <li><strong>Maturité SDK ODM :</strong> exiger PoC avant signature.</li>
+            <li><strong>Stabilité fournisseur :</strong> privilégier &gt; 3 ans, &gt; 10 000 unités.</li>
+            <li><strong>MOQ vs phase pilote :</strong> négocier contrats à étapes.</li>
+          </ul>
+        </div>
+        <div class="risk-card">
+          <h4>⚠️ 8.4 Risques fonctionnels</h4>
+          <ul>
+            <li><strong>Caméra basse lumière :</strong> tester en intérieur peu éclairé (critique malvoyants).</li>
+            <li><strong>FOV :</strong> minimum 90°.</li>
+            <li><strong>Latence end-to-end</strong> caméra → IA → haptique : cible <strong>&lt; 200 ms</strong>.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══ 9. PLAN D'ACTION ══ -->
+    <section id="plan">
+      <h2>9. Plan d'action</h2>
+      <div class="phases">
+        <div class="phase">
+          <h4>Phase 1 — Qualification technique (0–3 mois)</h4>
+          <ol>
+            <li><strong>Acheter 3 dev kits :</strong> 1× INMO Air 3, 1× Mentra Live, 1× Rokid AI Glasses Style. Coût total ~2 000–3 000 EUR.</li>
+            <li><strong>Porter l'IA SeeHaptic :</strong> test on-device (INMO) + déporté smartphone (Mentra, Rokid).</li>
+            <li><strong>Benchmark caméra :</strong> qualité, latence, FOV, basse lumière, autonomie sous charge IA.</li>
+            <li><strong>Engager 5–7 ODM Shenzhen en RFQ parallèle :</strong> Joysee, MCL, Jingyun IoT, Yunchuang Zhixiang, Anpo, Meellan, Beautaste. Brief technique + NDA.</li>
+          </ol>
+        </div>
+        <div class="phase p2">
+          <h4>Phase 2 — Sélection partenaire pilote (3–6 mois)</h4>
+          <ul>
+            <li>Choisir 1 OBM (Rokid ou INMO) pour partenariat plateforme + premier lancement commercial.</li>
+            <li>Choisir 1 ODM (Joysee, MCL ou Yunchuang) pour développement custom SeeHaptic-branded.</li>
+            <li>Lancer audit usine (SGS / TÜV / Bureau Veritas) pour partenaire ODM retenu.</li>
+            <li>Signer accords-cadres incluant PI, confidentialité, exclusivité régionale.</li>
+          </ul>
+        </div>
+        <div class="phase p3">
+          <h4>Phase 3 — Scale-up (6–18 mois)</h4>
+          <ul>
+            <li>Si volumes &gt; 50 k unités/an : basculer (ou doubler) avec un tier 1 ODM (Goertek ou Luxshare).</li>
+            <li>Diversifier géographiquement : Vietnam (Goertek), Thaïlande (Beautaste).</li>
+            <li>Capitaliser sur certifications pour ouvrir US, Japon.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══ 10. CONTACTS ══ -->
+    <section id="contacts">
+      <h2>10. Contacts à activer en priorité (semaine 1)</h2>
+      <div class="table-wrap">
+        <table>
+          <tr><th>Fournisseur</th><th>Canal d'entrée</th><th>Message-clé</th></tr>
+          <tr><td><strong>INMO</strong></td><td><code>support@inmoxr.com</code> + Kickstarter campaign team</td><td>Demande partenariat "accessibility / B2B medical" sur Air 3, accès SDK avancé, OEM ré-habillage solaire.</td></tr>
+          <tr><td><strong>Rokid</strong></td><td>Channel Partner Program sur <a href="https://rokid.ai/" target="_blank">rokid.ai</a></td><td>SeeHaptic, solution haptique pour malvoyants, intéressée par AI Glasses Style + partenariat plateforme Europe.</td></tr>
+          <tr><td><strong>Mentra Live / MentraOS</strong></td><td><a href="https://mentraglass.com/contact" target="_blank">mentraglass.com/contact</a> + console développeur</td><td>Test SDK pour déploiement IA accessibility (mention Microsoft Seeing AI comme précédent).</td></tr>
+          <tr><td><strong>Joysee Eyewear</strong></td><td><a href="https://www.joysee-optical.com/oem-smart-glasses/" target="_blank">Formulaire OEM</a></td><td>RFQ : 1 000 pcs pilote, design solaire premium, caméra 12 MP avec EIS, SDK custom, certifications CE/FCC/RoHS.</td></tr>
+          <tr><td><strong>Yunchuang Zhixiang</strong></td><td>Via plateforme GlobalOEMs</td><td>"OEM Wearable for Blind" – partager brief SeeHaptic complet, obtenir échantillons.</td></tr>
+          <tr><td><strong>MCL Technology</strong></td><td>Via GlobalSources</td><td>Échantillons M02 Ultra, options upgrade caméra 12 MP, modalités SDK.</td></tr>
+          <tr><td><strong>Beautaste Eyewear</strong></td><td><a href="https://www.beautasteyewear.com/" target="_blank">beautasteyewear.com</a></td><td>Profil design solaire premium (acétate / TR90). Demander capacité intégration camera/IA module.</td></tr>
+        </table>
+      </div>
+    </section>
+
+    <!-- ══ 11. CONCLUSION ══ -->
+    <section id="conclusion">
+      <h2>11. Conclusion</h2>
+      <p>La "meilleure" lunette pour SeeHaptic n'existe pas sous une seule référence : c'est une <strong>combinaison</strong> entre :</p>
+      <ul>
+        <li>🎯 un capteur caméra de qualité (<strong>Sony IMX681 ou supérieur, ≥ 12 MP</strong>),</li>
+        <li>🎯 un SoC capable d'exécuter le réseau de neurones (<strong>Snapdragon AR1 ou XR2</strong> si on-device),</li>
+        <li>🎯 une monture <strong>acceptable comme lunettes solaires</strong>,</li>
+        <li>🎯 un fournisseur logiciel <strong>qui accepte d'exposer le flux caméra</strong>.</li>
+      </ul>
+      <h4 style="margin-top:1.25rem">Quatre candidats à activer en priorité dans les prochaines semaines :</h4>
+      <div class="top4" style="margin-top:.75rem">
+        <div class="top4-item"><div class="top4-num">1</div><div class="top4-text"><strong>INMO</strong><span>Stack logicielle Android native</span></div></div>
+        <div class="top4-item"><div class="top4-num">2</div><div class="top4-text"><strong>Rokid</strong><span>Facteur de forme + programme partenaire</span></div></div>
+        <div class="top4-item"><div class="top4-num">3</div><div class="top4-text"><strong>Joysee Eyewear</strong><span>Design custom solaire moyenne échelle</span></div></div>
+        <div class="top4-item"><div class="top4-num">4</div><div class="top4-text"><strong>Goertek</strong><span>Mise à l'échelle industrielle (phase 2)</span></div></div>
+      </div>
+    </section>
+
+    <div class="page-footer">
+      <em>Document préparé en mai 2026 sur la base de sources publiques : sites fabricants (Rokid, INMO, Mentra, RayNeo, Huawei, HTC, Joysee, Beautaste, Goertek, Luxshare), IDC, Counterpoint, presse spécialisée (CES 2026 / MWC 2026, BGR, Pandaily, SCMP, CNBC, TrendForce, Financial Times), plateformes B2B (Made-in-China, Global Sources, GlobalOEMs).</em>
+    </div>
+
+  </main>
+</div>
+
+</body>
+</html>
